@@ -1,0 +1,9 @@
+# Kconfig - nRF52832 RuuviTag B6 board configuration
+#
+# Copyright (c) 2019 Ruuvi Innovations Ltd
+#
+# SPDX-License-Identifier: Apache-2.0
+
+config  BOARD_NRF52832_RUUVITAGB6
+	bool "nRF52 nRF52832 RUUVITAGB6"
+	depends on SOC_NRF52832_QFAA
