@@ -88,6 +88,9 @@
 #define LIS2DH_ODR_BITS			(LIS2DH_ODR_RATE(LIS2DH_ODR_IDX))
 #define LIS2DH_ODR_MASK			(BIT_MASK(4) << LIS2DH_ODR_SHIFT)
 
+#define LIS2DH_REG_WHOAMI               0x0F
+#define LIS2DH_WHOAMI_VAL               0x33
+
 #define LIS2DH_REG_CTRL2		0x21
 #define LIS2DH_HPIS2_EN_BIT		BIT(1)
 #define LIS2DH_FDS_EN_BIT		BIT(3)
@@ -162,8 +165,8 @@
 
 /* sample buffer size includes status register */
 #if defined(DT_ST_LIS2DH_0_BUS_SPI)
-#define LIS2DH_BUF_SZ			8
-#define LIS2DH_DATA_OFS			1
+#define LIS2DH_BUF_SZ			7
+#define LIS2DH_DATA_OFS			0
 #else
 #define LIS2DH_BUF_SZ			7
 #define LIS2DH_DATA_OFS			0
@@ -184,7 +187,8 @@
 union lis2dh_sample {
 	u8_t raw[LIS2DH_BUF_SZ];
 	struct {
-#if defined(DT_ST_LIS2DH_0_BUS_SPI)
+//#if defined(DT_ST_LIS2DH_0_BUS_SPI)
+#if 0
 		u8_t dummy;
 #endif
 		u8_t status;
@@ -246,6 +250,12 @@ static inline int lis2dh_bus_configure(struct device *dev)
 	lis2dh->spi_cfg.operation = LIS2DH_SPI_CFG;
 	lis2dh->spi_cfg.frequency = DT_ST_LIS2DH_0_SPI_MAX_FREQUENCY;
 	lis2dh->spi_cfg.slave = LIS2DH_BUS_ADDRESS;
+        struct device* d_gpio = device_get_binding(DT_ST_LIS2DH_0_CS_GPIO_CONTROLLER);
+        static struct spi_cs_control cs;
+        cs.gpio_dev = d_gpio;
+        cs.gpio_pin = DT_ST_LIS2DH_0_CS_GPIO_PIN;
+        cs.delay = 10;
+        lis2dh->spi_cfg.cs = &cs;
 
 	return 0;
 #elif defined(DT_ST_LIS2DH_0_BUS_I2C)

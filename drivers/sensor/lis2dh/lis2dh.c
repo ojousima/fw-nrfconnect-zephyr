@@ -134,6 +134,7 @@ static int lis2dh_sample_fetch(struct device *dev, enum sensor_channel chan)
 	 * since status and all accel data register addresses are consecutive,
 	 * a burst read can be used to read all the samples
 	 */
+        memset(lis2dh->sample.raw, 0, sizeof(lis2dh->sample.raw));
 	status = lis2dh_burst_read(dev, LIS2DH_REG_STATUS,
 				   lis2dh->sample.raw,
 				   sizeof(lis2dh->sample.raw));
@@ -144,7 +145,7 @@ static int lis2dh_sample_fetch(struct device *dev, enum sensor_channel chan)
 
 	for (i = 0; i < (3 * sizeof(s16_t)); i += sizeof(s16_t)) {
 		s16_t *sample =
-			(s16_t *)&lis2dh->sample.raw[LIS2DH_DATA_OFS + 1 + i];
+			(s16_t *)&lis2dh->sample.raw[0 + 1 + i];
 
 		*sample = sys_le16_to_cpu(*sample);
 	}
@@ -323,13 +324,22 @@ int lis2dh_init(struct device *dev)
 		return status;
 	}
 
+        /** Check WHOAMI **/
+        uint8_t whoamI = 0;
+        status = lis2dh_reg_read_byte(dev, LIS2DH_REG_WHOAMI, &whoamI);
+        if ( whoamI != LIS2DH_WHOAMI_VAL ) { 
+          return -ENOTSUP; 
+        }
+
+        /** Run self-test**/
+
 	/* Initialize control register ctrl1 to ctrl 6 to default boot values
 	 * to avoid warm start/reset issues as the accelerometer has no reset
 	 * pin. Register values are retained if power is not removed.
 	 * Default values see LIS2DH documentation page 30, chapter 6.
 	 */
 	(void)memset(raw, 0, sizeof(raw));
-	raw[LIS2DH_DATA_OFS] = LIS2DH_ACCEL_EN_BITS;
+	raw[0] = LIS2DH_ACCEL_EN_BITS;
 
 	status = lis2dh_burst_write(dev, LIS2DH_REG_CTRL1, raw,
 				    sizeof(raw));

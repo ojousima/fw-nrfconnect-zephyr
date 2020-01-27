@@ -34,12 +34,12 @@ void main(void)
 						| GPIO_PUD_PULL_UP);
 
 	/* Configure Button 2 as wake source from deep sleep */
-	gpio_pin_configure(gpio_port, BUTTON_2, GPIO_DIR_IN
+	/*gpio_pin_configure(gpio_port, BUTTON_2, GPIO_DIR_IN
 						| GPIO_PUD_PULL_UP
 						| GPIO_INT | GPIO_INT_LEVEL
 						| GPIO_CFG_SENSE_LOW);
 
-	gpio_pin_enable_callback(gpio_port, BUTTON_2);
+	gpio_pin_enable_callback(gpio_port, BUTTON_2);*/
 
 	/* Configure LEDs */
 	gpio_pin_configure(gpio_port, LED_1, GPIO_DIR_OUT);

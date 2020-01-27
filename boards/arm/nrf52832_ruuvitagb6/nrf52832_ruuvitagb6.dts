@@ -47,6 +47,7 @@
 		led0 = &led0;
 		led1 = &led1;
 		sw0 = &button0;
+		gpio0 = &gpio0;
 	};
 };
 
@@ -75,12 +76,28 @@
 	ch0-inverted;
 };
 
-&spi0 {
+&spi1 {
 	/* Cannot be used together with i2c0. */
-	/* status = "ok"; */
-	sck-pin = <29>;
+    status = "ok";
+    sck-pin = <29>;
 	mosi-pin = <25>;
 	miso-pin = <28>;
+    num-cs = <2>;
+    cs-gpios = <&gpio0 3 0>, <&gpio0 8 0>;
+	bme280@0 {
+	    status = "ok";
+		compatible = "bosch,bme280";
+		reg = <0x00>;
+		label = "BME280";
+		spi-max-frequency = <10000000>;
+	};
+	lis2dh@1 {
+	    status = "ok";
+		compatible = "st,lis2dh";
+		reg = <0x01>;
+		label = "LIS2DH";
+		spi-max-frequency = <10000000>;
+	};
 };
 
 arduino_serial: &uart0 {

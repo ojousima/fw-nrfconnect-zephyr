@@ -347,6 +347,12 @@ static inline int bme280_spi_init(struct bme280_data *data)
 		SPI_MODE_CPOL | SPI_MODE_CPHA;
 	data->spi_cfg.frequency = DT_BOSCH_BME280_0_SPI_MAX_FREQUENCY;
 	data->spi_cfg.slave = DT_BOSCH_BME280_0_BASE_ADDRESS;
+        struct device* d_gpio = device_get_binding(DT_BOSCH_BME280_0_CS_GPIO_CONTROLLER);
+        static struct spi_cs_control cs;
+        cs.gpio_dev = d_gpio;
+        cs.gpio_pin = DT_BOSCH_BME280_0_CS_GPIO_PIN;
+        cs.delay = 10;
+        data->spi_cfg.cs = &cs;
 
 	return 0;
 }

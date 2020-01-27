@@ -17,7 +17,7 @@
 /* change this to use another GPIO port */
 #define PORT		SW0_GPIO_CONTROLLER
 #define BUTTON_1	SW0_GPIO_PIN
-#define BUTTON_2	SW1_GPIO_PIN
+//#define BUTTON_2	SW1_GPIO_PIN
 #define LED_1		LED0_GPIO_PIN
 #define LED_2		LED1_GPIO_PIN
 
